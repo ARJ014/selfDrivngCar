@@ -2,10 +2,32 @@ body {
   padding: 0;
   margin: 0;
   background-color: darkgrey;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   overflow: hidden;
+}
+
+#verticalButtons {
+  display: flex;
+  flex-direction: column;
+}
+
+button {
+  border: none;
+  border-radius: 5px;
+  padding: 5px 5px 7px 5px;
+  margin: 2px;
+  cursor: pointer;
+}
+button:hover {
+  background: blue;
 }
 
 #myCanvas {
   background-color: lightgray;
+}
+
+#networkCanvas {
+  background-color: black;
 }

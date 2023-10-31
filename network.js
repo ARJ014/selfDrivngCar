@@ -1,16 +1,34 @@
 class Neural {
-  constructor(neuronCount) {
+  constructor(neuronCounts) {
     this.level = [];
-    for (let i = 0; i < neuronCount.length - 1; i++) {
-      this.level.push(new Level(neuronCount[i], neuronCount[i + 1]));
+    for (let i = 0; i < neuronCounts.length - 1; i++) {
+      this.level.push(new Level(neuronCounts[i], neuronCounts[i + 1]));
     }
   }
-  static feedforward(givenInputs, network) {
-    let outputs = Level.feedforward(givenInputs, network.level[0]);
+
+  static feedForward(givenInputs, network) {
+    let outputs = Level.feedForward(givenInputs, network.level[0]);
     for (let i = 1; i < network.level.length; i++) {
-      outputs = Level.feedforward(outputs, network.level[i]);
+      outputs = Level.feedForward(outputs, network.level[i]);
     }
     return outputs;
+  }
+
+  static mutate(network, amount = 1) {
+    network.level.forEach((level) => {
+      for (let i = 0; i < level.biases.length; i++) {
+        level.biases[i] = lerp(level.biases[i], Math.random() * 2 - 1, amount);
+      }
+      for (let i = 0; i < level.weights.length; i++) {
+        for (let j = 0; j < level.weights[i].length; j++) {
+          level.weights[i][j] = lerp(
+            level.weights[i][j],
+            Math.random() * 2 - 1,
+            amount
+          );
+        }
+      }
+    });
   }
 }
 
@@ -27,6 +45,7 @@ class Level {
 
     Level.#randomize(this);
   }
+
   static #randomize(level) {
     for (let i = 0; i < level.inputs.length; i++) {
       for (let j = 0; j < level.outputs.length; j++) {
@@ -34,12 +53,12 @@ class Level {
       }
     }
 
-    for (let i = 0; i < level.outputs.length; i++) {
+    for (let i = 0; i < level.biases.length; i++) {
       level.biases[i] = Math.random() * 2 - 1;
     }
   }
 
-  static feedforward(givenInputs, level) {
+  static feedForward(givenInputs, level) {
     for (let i = 0; i < level.inputs.length; i++) {
       level.inputs[i] = givenInputs[i];
     }
@@ -49,8 +68,12 @@ class Level {
       for (let j = 0; j < level.inputs.length; j++) {
         sum += level.inputs[j] * level.weights[j][i];
       }
-      if (sum > level.biases[i]) level.outputs[i] = 1;
-      else level.outputs[i] = 0;
+
+      if (sum > level.biases[i]) {
+        level.outputs[i] = 1;
+      } else {
+        level.outputs[i] = 0;
+      }
     }
 
     return level.outputs;

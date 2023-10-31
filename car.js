@@ -33,7 +33,7 @@ class Car {
       const offsets = this.sensors.readings.map((e) =>
         e == null ? 0 : 1 - e.offset
       );
-      const outputs = Neural.feedforward(offsets, this.brain);
+      const outputs = Neural.feedForward(offsets, this.brain);
 
       if (this.brain) {
         this.controls.forward = outputs[0];
@@ -116,7 +116,7 @@ class Car {
     // console.log(this.y);
   }
 
-  draw(ctx, color) {
+  draw(ctx, color, drawSensor) {
     if (this.damge) ctx.fillStyle = "gray";
     else ctx.fillStyle = color;
     ctx.beginPath();
@@ -125,7 +125,7 @@ class Car {
       ctx.lineTo(this.polygon[i].x, this.polygon[i].y);
     }
     ctx.fill();
-    if (this.sensors) {
+    if (this.sensors && drawSensor) {
       this.sensors.draw(ctx);
     }
   }
